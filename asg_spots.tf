@@ -1,9 +1,9 @@
 resource "aws_autoscaling_group" "spots" {
   name_prefix = format("%s-spots", var.project_name)
   vpc_zone_identifier = [
-    data.aws_ssm_parameter.subnet_public_1a.value,
-    data.aws_ssm_parameter.subnet_public_1b.value,
-    data.aws_ssm_parameter.subnet_public_1c.value
+    data.aws_ssm_parameter.subnet_private_1a.value,
+    data.aws_ssm_parameter.subnet_private_1b.value,
+    data.aws_ssm_parameter.subnet_private_1c.value
   ]
 
   desired_capacity = var.cluster_spot_desired_size
@@ -25,6 +25,12 @@ resource "aws_autoscaling_group" "spots" {
     key                 = "AmazonECSManaged"
     value               = true
     propagate_at_launch = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      desired_capacity
+    ]
   }
 }
 
